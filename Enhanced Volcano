@@ -1,0 +1,37 @@
+BiocManager::install("EnhancedVolcano")
+library(readxl)
+library(EnhancedVolcano)
+dataset = read_excel("editKO_vs_WT_5393SignGenes_pVal0.05.xlsx", sheet = 1)
+
+keyvals <- ifelse(
+  dataset$log2FoldChange < -1 & dataset$padj<0.05, 'lightblue',
+ ifelse (dataset$log2FoldChange > 1 & dataset$padj<0.05, 'red2',
+         'grey'))
+keyvals[is.na(keyvals)] <- 'grey'
+names(keyvals)[keyvals == 'red2'] <- 'high'
+names(keyvals)[keyvals == 'grey'] <- 'no sig'
+names(keyvals)[keyvals == 'lightblue'] <- 'low'
+
+#Create publication grade volcano plot with marked genes of interest
+EnhancedVolcano(dataset,
+                lab = dataset$Gene.Name,
+                x = 'log2FoldChange',
+                y = 'padj',
+                pCutoff = 0.05,
+                FCcutoff = 1,
+                selectLab = c("Ifi27","Rsad2", "Oas1a","Isg15","Ifit1","Ifitm3","Ccl5"),
+                pointSize = 1,
+                labSize = 5,
+                axisLabSize = 19,
+                boxedLabels = F,
+                maxoverlapsConnectors = Inf,
+                title = '',
+                legendPosition = "right",
+                legendLabSize = 3,
+                colCustom = keyvals,
+                colAlpha = 0.4,
+                drawConnectors = T,
+                hline = c(0.05),
+                widthConnectors = 0.2,
+                gridlines.major = F,
+                gridlines.minor = F)
