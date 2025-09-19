@@ -1,2 +1,2 @@
 # Enhanced-Volcano
-For the generation of volcano plots
+For the generation of volcano plots in R
